@@ -11,7 +11,13 @@ func main() {
 	fmt.Printf("Welcome to %v booking application\n", conferenceName)
 	fmt.Printf("We have a total of %v tickets and %v are still available\n", conferenceTickets, remainingTickets)
 	fmt.Println("Get your tickets here to attend")
+	
 
+	// For arrays
+	//// var bookings = [50]string{}
+	// For slices
+	//// var bookings []string
+	bookings := []string{}
 
 	var firstName string
 	var lastName string
@@ -31,9 +37,16 @@ func main() {
 	fmt.Scan(&userTickets)
 
 	remainingTickets = remainingTickets - userTickets;
+	// For arrays
+	//// bookings[0] = firstName + " " + lastName
+	// For slices
+	bookings = append(bookings, firstName + " " + lastName)
+
 
 	fmt.Printf("Thank you %v %v for booking %v tickets. You will receive a confirmation email at %v\n", firstName, lastName, userTickets, email)
 
 	fmt.Printf("%v tickets remaining for %v\n", remainingTickets, conferenceName)
+
+	fmt.Printf("These are all our bookings: %v\n", bookings)
 	
 }
