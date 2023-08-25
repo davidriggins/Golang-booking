@@ -87,6 +87,18 @@ func main() {
 		}
 
 		
+		// city := "London"
+
+		// switch city {
+		// 	case "New York":
+		// 		// Execute code for booking New York
+		// 	case "Singapore":
+		// 		// Execute code for booking Singapore
+		// 	case "London", "Berlin":
+		// 		// Execute code for booking London or Berlin
+		// 	default:
+		// 		// When none of above are true, execute this code
+		// }
 	
 	}
 }
