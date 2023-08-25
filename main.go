@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -21,7 +22,7 @@ type UserData struct {
 	numberOfTickets uint
 }
 
-
+var wg = sync.WaitGroup{}
 
 func main() {
 	
@@ -30,67 +31,67 @@ func main() {
 	greetUsers()
 
 	
-	for {
+	// For arrays
+	//// var bookings = [50]string{}
+	// For slices
+	//// var bookings []string
 
-		// For arrays
-		//// var bookings = [50]string{}
-		// For slices
-		//// var bookings []string
-
-		
-		// Get user input
-		firstName, lastName, email, userTickets := getUserInput()
-
-		// Validate user input
-		isValidName, isValidEmail, isValidTicketNumber := validateUserInput(firstName, lastName, email, userTickets, remainingTickets)
-		
-
-		if isValidName && isValidEmail && isValidTicketNumber {
-			
-			// Book the tickets
-			bookTicket(userTickets, firstName, lastName, email)
-
-			// Send the tickets. Adding go in front makes it concurrent
-			go sendTicket(userTickets, firstName, lastName, email)
-
-			// Call to get first names
-			firstNames := getFirstNames()
-			fmt.Printf("The first names of bookings are: %v\n", firstNames)
-
-
-			noTicketsRemaining := remainingTickets == 0 
-			if noTicketsRemaining {
-				// end program
-				fmt.Println("Our conference is booked. Come back again next year")
-				break
-			}
-		} else {
-			if !isValidName {
-				fmt.Println("First name or last name you entered is too short")
-			}
-			if !isValidEmail {
-				fmt.Println("Email address you entered does not contain an @ sign")
-			}
-			if !isValidTicketNumber {
-				fmt.Println("Number of tickets you entered is invalid")
-			}
-		}
-
-		
-		// city := "London"
-
-		// switch city {
-		// 	case "New York":
-		// 		// Execute code for booking New York
-		// 	case "Singapore":
-		// 		// Execute code for booking Singapore
-		// 	case "London", "Berlin":
-		// 		// Execute code for booking London or Berlin
-		// 	default:
-		// 		// When none of above are true, execute this code
-		// }
 	
+	// Get user input
+	firstName, lastName, email, userTickets := getUserInput()
+
+	// Validate user input
+	isValidName, isValidEmail, isValidTicketNumber := validateUserInput(firstName, lastName, email, userTickets, remainingTickets)
+	
+
+	if isValidName && isValidEmail && isValidTicketNumber {
+		
+		// Book the tickets
+		bookTicket(userTickets, firstName, lastName, email)
+
+
+		wg.Add(1)
+		// Send the tickets. Adding go in front makes it concurrent
+		go sendTicket(userTickets, firstName, lastName, email)
+
+		// Call to get first names
+		firstNames := getFirstNames()
+		fmt.Printf("The first names of bookings are: %v\n", firstNames)
+
+
+		noTicketsRemaining := remainingTickets == 0 
+		if noTicketsRemaining {
+			// end program
+			fmt.Println("Our conference is booked. Come back again next year")
+		}
+	} else {
+		if !isValidName {
+			fmt.Println("First name or last name you entered is too short")
+		}
+		if !isValidEmail {
+			fmt.Println("Email address you entered does not contain an @ sign")
+		}
+		if !isValidTicketNumber {
+			fmt.Println("Number of tickets you entered is invalid")
+		}
 	}
+
+	wg.Wait()
+
+	
+	// city := "London"
+
+	// switch city {
+	// 	case "New York":
+	// 		// Execute code for booking New York
+	// 	case "Singapore":
+	// 		// Execute code for booking Singapore
+	// 	case "London", "Berlin":
+	// 		// Execute code for booking London or Berlin
+	// 	default:
+	// 		// When none of above are true, execute this code
+	// }
+	
 }
 
 func greetUsers() {
@@ -172,5 +173,7 @@ func sendTicket(userTickets uint, firstName string, lastName string, email strin
 	fmt.Println("####################")
 	fmt.Printf("Sending ticket:\n %v \nto email address %v\n", ticket, email)
 	fmt.Println("####################")
+
+	wg.Done()
 
 }
